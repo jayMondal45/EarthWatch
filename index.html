@@ -26,8 +26,8 @@
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
   <!-- For Map Integration -->
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 
 <body>
@@ -100,6 +100,9 @@
         </li>
         <li>
           <a href="#prediction" class="nav-link"><span>AI PREDICTIONS</span></a>
+        </li>
+        <li>
+          <a href="#reports" class="nav-link"><span>REPORTS</span></a>
         </li>
       </ul>
       <div class="nav-actions">
@@ -273,9 +276,10 @@
           </div>
         </div>
         <div class="card-content">
-          <div class="seismic-map" id="quakeMap">
-            <!-- Map will be initialized by JavaScript -->
+          <div class="loading-overlay" id="mapLoading">
+            <div class="spinner"></div>
           </div>
+          <div class="seismic-map" id="quakeMap"></div>
           <div class="map-legend">
             <div class="legend-item">
               <div class="legend-color" style="background: #4cc9f0"></div>
@@ -290,6 +294,9 @@
               <span>M 5.0+</span>
             </div>
           </div>
+          <div class="last-updated" id="mapLastUpdated">
+            Last updated: <span id="mapUpdateTime">Loading...</span>
+          </div>
         </div>
       </div>
 
@@ -301,13 +308,60 @@
             <button class="card-btn"><i class="fas fa-expand"></i></button>
           </div>
         </div>
-        <div class="card-content">
+        <div class="card-content" id="report">
+          <div class="loading-overlay" id="listLoading">
+            <div class="spinner"></div>
+          </div>
           <div class="quake-list" id="quakeList">
-            <!-- Quake items will be added by JavaScript -->
+            <!-- Skeleton loading -->
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+          </div>
+          <div class="last-updated" id="listLastUpdated">
+            Last updated: <span id="listUpdateTime">Loading...</span>
           </div>
         </div>
       </div>
     </div>
+
   </section>
 
   <!-- Historical Data Section -->
@@ -559,7 +613,7 @@
   </section>
 
   <!-- User Feedback Section -->
-  <section class="feedback-section">
+  <section class="feedback-section" id="reports">
     <div class="section-header">
       <h2 class="section-title">REPORT YOUR OBSERVATIONS</h2>
       <p class="section-subtitle">
@@ -640,7 +694,8 @@
           <a href="#"><i class="fab fa-twitter"></i></a>
           <a href="#"><i class="fab fa-linkedin"></i></a>
           <a href="#"><i class="fab fa-github"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
         </div>
       </div>
 
@@ -650,8 +705,8 @@
           <li><a href="#home">Home</a></li>
           <li><a href="#weather">Weather</a></li>
           <li><a href="#earthquakes">Earthquakes</a></li>
-          <li><a href="#alerts">Alerts</a></li>
-          <li><a href="#learn">Learn</a></li>
+          <li><a href="#prediction">AI Prediction</a></li>
+          <li><a href="#reports">Reports</a></li>
         </ul>
       </div>
 
@@ -697,6 +752,16 @@
       </div>
     </div>
   </footer>
+  <!--------- Bottom to top button ---------->
+  <button id="cyberScrollBtn" class="cyber-scroll-btn" aria-label="Return to orbit">
+    <div class="hologram-core"></div>
+    <div class="neon-ring"></div>
+    <div class="energy-trail"></div>
+    <svg class="arrow-icon" viewBox="0 0 24 24">
+      <path d="M12 4l-8 8h5v8h6v-8h5z" fill="none" stroke="currentColor" stroke-width="2" />
+    </svg>
+    <div class="particle-field"></div>
+  </button>
 
   <!-- Scripts -->
   <script src="js/script.js"></script>
@@ -705,6 +770,9 @@
   <script src="js/liveWeather.js"></script>
   <script src="js/weather.js"></script>
   <script src="js/report.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/map.js"></script>
 </body>
 
 </html>
