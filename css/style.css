@@ -1893,10 +1893,10 @@ a {
 /* Cyberpunk Neon Scroll Button */
 .cyber-scroll-btn {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 70px;
-  height: 70px;
+  bottom: 30px;
+  right: 20px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   background: rgba(10, 15, 30, 0.8);
   border: 2px solid rgba(100, 150, 255, 0.3);
@@ -1967,8 +1967,8 @@ a {
 /* Arrow Icon (Futuristic SVG) */
 .arrow-icon {
   position: absolute;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
