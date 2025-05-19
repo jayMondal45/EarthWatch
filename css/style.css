@@ -711,6 +711,10 @@ a {
   overflow-y: scroll;
 }
 
+#report::-webkit-scrollbar {
+  display: none;
+}
+
 .loading-overlay {
   position: absolute;
   top: 0;
@@ -1445,28 +1449,6 @@ a {
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: var(--space-lg);
-}
-
-#report::-webkit-scrollbar {
-  width: 8px;
-  /* Width of the scrollbar */
-}
-
-#report::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  /* Track color */
-  border-radius: 10px;
-}
-
-#report::-webkit-scrollbar-thumb {
-  background: #888;
-  /* Scrollbar thumb color */
-  border-radius: 10px;
-}
-
-#report::-webkit-scrollbar-thumb:hover {
-  background: #555;
-  /* Hover effect */
 }
 
 .community-reports h3 {
