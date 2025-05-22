@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const weatherResult = document.getElementById('weatherPredictionResult');
   const quakeResult = document.getElementById('quakePredictionResult');
 
-  // Open modals
+  // Open weather modal
   if (weatherTriggerBtn) {
     weatherTriggerBtn.addEventListener('click', () => {
       weatherModal.style.display = 'flex';
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Open earthquake modal
   if (quakeTriggerBtn) {
     quakeTriggerBtn.addEventListener('click', () => {
       quakeModal.style.display = 'flex';
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Close when clicking outside
+  // Close when clicking outside modal
   window.addEventListener('click', (e) => {
     if (e.target === weatherModal) {
       weatherModal.style.display = 'none';
@@ -98,9 +99,9 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
       const conditions = ['sunny', 'cloudy', 'rainy', 'stormy', 'snowy'];
       const condition = conditions[Math.floor(Math.random() * conditions.length)];
-      const temp = Math.floor(Math.random() * 30) + 10;
-      const humidity = Math.floor(Math.random() * 60) + 30;
-      const wind = Math.floor(Math.random() * 30) + 5;
+      const temp = Math.floor(Math.random() * 30) + 10; // 10-40°C
+      const humidity = Math.floor(Math.random() * 60) + 30; // 30-90%
+      const wind = Math.floor(Math.random() * 30) + 5; // 5-35 km/h
 
       weatherResult.classList.add('active');
       weatherResult.innerHTML = `
@@ -129,8 +130,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setTimeout(() => {
       const riskLevel = Math.floor(Math.random() * 100);
-      const mag = (Math.random() * 4 + 1).toFixed(1);
-      const confidence = Math.floor(Math.random() * 30) + 65;
+      const mag = (Math.random() * 4 + 1).toFixed(1); // 1.0-5.0 magnitude
+      const confidence = Math.floor(Math.random() * 30) + 65; // 65-95% confidence
 
       quakeResult.classList.add('active');
       quakeResult.innerHTML = `
@@ -160,13 +161,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Helper functions
   function getWeatherIcon(condition) {
     const icons = {
-      sunny: 'sun',
-      cloudy: 'cloud',
-      rainy: 'cloud-rain',
-      stormy: 'bolt',
-      snowy: 'snowflake'
+      sunny: 'fa-sun',
+      cloudy: 'fa-cloud',
+      rainy: 'fa-cloud-rain',
+      stormy: 'fa-bolt',
+      snowy: 'fa-snowflake'
     };
-    return icons[condition] || 'question';
+    return icons[condition] || 'fa-question';
   }
 
   function getWeatherColor(condition) {
