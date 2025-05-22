@@ -468,13 +468,47 @@
       <h3><i class="fas fa-cloud-sun-rain"></i> WEATHER PREDICTION</h3>
       <form id="weatherPredictionForm">
         <div class="form-group">
-          <label for="weatherLocation"><i class="fas fa-map-marker-alt"></i> Location</label>
-          <input type="text" id="weatherLocation" placeholder="City or coordinates" required>
-        </div>
-        <div class="form-group">
-          <label for="weatherDate"><i class="fas fa-calendar-alt"></i> Prediction Date</label>
+          <label for="weatherDate">
+            <i class="fas fa-calendar-alt"></i> Prediction Date
+          </label>
           <input type="date" id="weatherDate" required>
         </div>
+
+        <div class="form-group">
+          <label for="weatherLocation">
+            <i class="fas fa-map-marker-alt"></i> Location
+          </label>
+          <input type="text" id="weatherLocation" placeholder="City or coordinates" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weatherTemp">
+            <i class="fas fa-thermometer-half"></i> Temperature (°C)
+          </label>
+          <input type="text" id="weatherTemp" placeholder="e.g. 28°C" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weatherWind">
+            <i class="fas fa-wind"></i> Wind Speed (km/h)
+          </label>
+          <input type="text" id="weatherWind" placeholder="e.g. 15 km/h" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weatherHumidity">
+            <i class="fas fa-tint"></i> Humidity (%)
+          </label>
+          <input type="text" id="weatherHumidity" placeholder="e.g. 65%" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weatherCloud">
+            <i class="fas fa-cloud"></i> Cloud Cover (%)
+          </label>
+          <input type="text" id="weatherCloud" placeholder="e.g. 40%" required>
+        </div>
+
         <button type="submit" class="modal-submit-btn">
           <i class="fas fa-brain"></i> GENERATE PREDICTION
         </button>
