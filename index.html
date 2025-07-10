@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EarthWatch - Live Weather & Earthquake Predictions</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;600&display=swap"
+    rel="stylesheet" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Particle.js for background effects -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+  <!-- For Map Integration -->
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body>
+  <!---------- Loader ----------->
+  <div class="earthwatch-loader">
+    <div class="radar-hud">
+      <div class="radar-container">
+        <div class="radar-dish"></div>
+        <div class="radar-sweep"></div>
+        <div class="seismic-waves"></div>
+        <div class="target-dots"></div>
+        <div class="grid-lines"></div>
+        <div class="center-pulse"></div>
+      </div>
+
+      <div class="hud-data">
+        <div class="loading-text">EARTHWATCH SYSTEMS INITIALIZING</div>
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+          <div class="progress-text">0%</div>
+        </div>
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="status-label">WEATHER SATELLITES</span>
+            <span class="status-value syncing">SYNCING...</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">SEISMIC NETWORK</span>
+            <span class="status-value online">ONLINE</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">DATA STREAMS</span>
+            <span class="status-value encrypting">ENCRYPTING</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+  </div>
+
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
+
+  <!-- Floating Navigation -->
+  <nav class="floating-nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <div class="logo-icon">
+          <div class="sphere"></div>
+          <div class="ring"></div>
+        </div>
+        <span class="logo-text">EARTHWATCH</span>
+      </div>
+      <ul class="nav-links">
+        <li>
+          <a href="#home" class="nav-link active"><span>HOME</span></a>
+        </li>
+        <li>
+          <a href="#weather" class="nav-link"><span>WEATHER</span></a>
+        </li>
+        <li>
+          <a href="#earthquakes" class="nav-link"><span>EARTHQUAKES</span></a>
+        </li>
+        <li>
+          <a href="#prediction" class="nav-link"><span>AI PREDICTIONS</span></a>
+        </li>
+        <li>
+          <a href="#history" class="nav-link"><span>HISTORY</span></a>
+        </li>
+        <li>
+          <a href="#reports" class="nav-link"><span>REPORTS</span></a>
+        </li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle">
+          <div class="toggle-circle"></div>
+        </button>
+        <button class="nav-menu-btn" id="mobileMenuBtn">
+          <div class="menu-line"></div>
+          <div class="menu-line"></div>
+          <div class="menu-line"></div>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="home">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="title-line">LIVE WEATHER &</span>
+          <span class="title-line">EARTHQUAKE PREDICTIONS</span>
+        </h1>
+        <p class="hero-subtitle">
+          Real-time monitoring with 96.7% prediction accuracy powered by AI
+        </p>
+
+        <div class="quick-status">
+          <div class="status-card weather-status">
+            <i id="weatherIcon" class="fas fa-question"></i>
+            <div class="location" id="curtLoct">Loading...</div>
+            <div class="weather-info">
+              <span id="weatherDesc">--</span>
+            </div>
+          </div>
+
+          <div class="status-card temp-status">
+            <i class="fas fa-thermometer-half"></i>
+            <div class="weather-info">
+              Temperature: <span id="curtTemp">--</span>°C
+            </div>
+          </div>
+
+          <div class="status-card feelslike-status">
+            <i class="fas fa-temperature-low"></i>
+            <div class="weather-info">
+              Feels like: <span id="curtfeels">--</span>°C
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="globe-container">
+          <div class="globe">
+            <div class="weather-layer"></div>
+            <div class="seismic-layer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span>SCROLL TO EXPLORE</span>
+    </div>
+  </section>
+
+  <!-- Weather Dashboard Section -->
+  <section class="dashboard-section" id="weather">
+    <div class="section-header">
+      <h2 class="section-title">LIVE WEATHER DATA</h2>
+      <p class="section-subtitle">
+        Real-time weather conditions and forecasts
+      </p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Current Weather Card -->
+      <div class="dashboard-card weather-card">
+        <div class="search-container">
+          <div class="search-input">
+            <i class="fas fa-location-dot"></i>
+            <input type="text" id="searchInput" placeholder="Search for a city...">
+            <div class="input-border"></div>
+          </div>
+          <button class="search-btn" id="searchButton">
+            SEARCH <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+        <div class="card-header">
+          <h3>CURRENT WEATHER</h3>
+          <div class="card-actions">
+            <button class="card-btn" id="refreshWeather"><i class="fas fa-sync-alt"></i></button>
+            <button class="card-btn"><i class="fas fa-map-marker-alt" id="useLocation"></i></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="weather-main">
+            <div class="weather-icon">
+              <i class="fas fa-sun" id="weatherIcon"></i>
+            </div>
+            <div class="weather-data">
+              <div class="temp"><span id="currentTemp">--</span>°C</div>
+              <div class="location" id="currentLocation">Detecting location...</div>
+            </div>
+          </div>
+          <div class="weather-details">
+            <div class="detail">
+              <span>HUMIDITY</span>
+              <span id="humidity">--%</span>
+            </div>
+            <div class="detail">
+              <span>PRESSURE</span>
+              <span id="pressure">-- hPa</span>
+            </div>
+            <div class="detail">
+              <span>WIND</span>
+              <span id="windSpeed">-- km/h</span>
+            </div>
+            <div class="detail">
+              <span>FEELS LIKE</span>
+              <span id="feelsLike">--°C</span>
+            </div>
+            <div class="detail">
+              <span>SUNRISE</span>
+              <span id="sunrise">--:--</span>
+            </div>
+            <div class="detail">
+              <span>SUNSET</span>
+              <span id="sunset">--:--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Forecast Card -->
+      <div class="dashboard-card forecast-card">
+        <div class="card-header">
+          <h3>6-DAY FORECAST</h3>
+          <div class="card-actions">
+            <button class="card-btn"><i class="fas fa-expand"></i></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="forecast-days" id="forecastContainer">
+            <!-- Forecast items will be added by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Earthquake Dashboard Section -->
+  <section class="dashboard-section" id="earthquakes">
+    <div class="section-header">
+      <h2 class="section-title">EARTHQUAKE TRACKER</h2>
+      <p class="section-subtitle">
+        Real-time seismic activity monitoring
+      </p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Earthquake Map Card -->
+      <div class="dashboard-card seismic-card">
+        <div class="card-header">
+          <h3>GLOBAL SEISMIC ACTIVITY</h3>
+          <div class="card-actions">
+            <button class="card-btn" id="refreshQuakes"><i class="fas fa-sync-alt"></i></button>
+            <button class="card-btn"><i class="fas fa-filter"></i></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="loading-overlay" id="mapLoading">
+            <div class="spinner"></div>
+          </div>
+          <div class="seismic-map" id="quakeMap"></div>
+          <div class="map-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #4cc9f0"></div>
+              <span>M 1.0-3.0</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #f8961e"></div>
+              <span>M 3.0-5.0</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #f94144"></div>
+              <span>M 5.0+</span>
+            </div>
+          </div>
+          <div class="last-updated" id="mapLastUpdated">
+            Last updated: <span id="mapUpdateTime">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Earthquakes Card -->
+      <div class="dashboard-card quake-list-card">
+        <div class="card-header">
+          <h3>RECENT EARTHQUAKES</h3>
+          <div class="card-actions">
+            <button class="card-btn"><i class="fas fa-expand"></i></button>
+          </div>
+        </div>
+        <div class="card-content" id="report">
+          <div class="loading-overlay" id="listLoading">
+            <div class="spinner"></div>
+          </div>
+          <div class="quake-list" id="quakeList">
+            <!-- Skeleton loading -->
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+            <div class="skeleton-item">
+              <div class="skeleton-magnitude"></div>
+              <div class="skeleton-details">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
+          </div>
+          <div class="last-updated" id="listLastUpdated">
+            Last updated: <span id="listUpdateTime">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Predictions Section -->
+  <section class="dashboard-section" id="prediction">
+    <div class="section-header">
+      <h2 class="section-title">AI PREDICTIONS</h2>
+      <p class="section-subtitle">
+        Advanced forecasting using machine learning models
+      </p>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Weather Prediction Card -->
+      <div class="dashboard-card prediction-card">
+        <div class="card-header">
+          <h3>WEATHER PREDICTION</h3>
+          <div class="card-actions">
+            <button class="card-btn" id="weatherPredictBtn"><i class="fas fa-bolt"></i></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="prediction-visual">
+            <div class="prediction-icon">
+              <i class="fas fa-cloud-sun-rain"></i>
+            </div>
+            <div class="prediction-result" id="weatherPredictionResult">
+              <p>Get AI-powered weather forecast for any location</p>
+            </div>
+          </div>
+          <button class="prediction-action-btn" id="weatherTriggerBtn">
+            <i class="fas fa-brain"></i> PREDICT WEATHER
+          </button>
+        </div>
+      </div>
+
+      <!-- Earthquake Prediction Card -->
+      <div class="dashboard-card prediction-card">
+        <div class="card-header">
+          <h3>EARTHQUAKE PREDICTION</h3>
+          <div class="card-actions">
+            <button class="card-btn" id="quakePredictBtn"><i class="fas fa-mountain"></i></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="prediction-visual">
+            <div class="prediction-icon">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="prediction-result" id="quakePredictionResult">
+              <p>Assess seismic risk for any region</p>
+            </div>
+          </div>
+          <button class="prediction-action-btn" id="quakeTriggerBtn">
+            <i class="fas fa-brain"></i> PREDICT EARTHQUAKE
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prediction Modals -->
+  <div class="prediction-modal" id="weatherPredictionModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3><i class="fas fa-cloud-sun-rain"></i> AI WEATHER PREDICTION</h3>
+      <form id="weatherPredictionForm">
+
+        <div class="form-group">
+          <label for="weatherTemp">
+            <i class="fas fa-thermometer-half"></i> Current Temperature (°C)
+          </label>
+          <input type="text" id="weatherTemp" placeholder="e.g. 28°C" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weatherHumidity">
+            <i class="fas fa-tint"></i> Current Humidity (%)
+          </label>
+          <input type="text" id="weatherHumidity" placeholder="e.g. 65%" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weatherWind">
+            <i class="fas fa-wind"></i> Wind Speed (km/h)
+          </label>
+          <input type="text" id="weatherWind" placeholder="e.g. 15 km/h" required>
+        </div>
+
+
+        <div class="form-group">
+          <label for="weatherCloud">
+            <i class="fas fa-cloud"></i> precipitation (mm)
+          </label>
+          <input type="text" id="weatherCloud" placeholder="e.g. 40%" required>
+        </div>
+
+        <div class="form-group">
+          <label for="weatherDate">
+            <i class="fas fa-calendar-alt"></i> Prediction Date
+          </label>
+          <input type="date" id="weatherDate" required>
+        </div>
+
+        <button type="submit" class="modal-submit-btn">
+          <i class="fas fa-brain"></i> GENERATE PREDICTION
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="prediction-modal" id="quakePredictionModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3><i class="fas fa-layer-group"></i> AI EARTHQUAKE PREDICTION</h3>
+      <form id="quakePredictionForm">
+        <div class="form-group">
+          <label for="quakeLatitude"><i class="fas fa-map-marked-alt"></i> Latitude</label>
+          <input type="number" id="quakeLatitude" step="0.0001" placeholder="e.g. 34.0522" required>
+        </div>
+        <div class="form-group">
+          <label for="quakeLongitude"><i class="fas fa-map-marked-alt"></i> Longitude</label>
+          <input type="number" id="quakeLongitude" step="0.0001" placeholder="e.g. -118.2437" required>
+        </div>
+        <button type="submit" class="modal-submit-btn">
+          <i class="fas fa-brain"></i> GENERATE PREDICTION
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Historical Data Section -->
+  <section class="history-section" id="history">
+    <div class="section-header">
+      <h2 class="section-title">HISTORICAL DATA</h2>
+      <p class="section-subtitle">
+        Weather trends and seismic activity over time
+      </p>
+    </div>
+
+    <div class="history-container">
+      <div class="history-tabs">
+        <button class="history-tab active" data-tab="temperature">TEMPERATURE</button>
+        <button class="history-tab" data-tab="precipitation">PRECIPITATION</button>
+        <button class="history-tab" data-tab="earthquakes">EARTHQUAKES</button>
+      </div>
+
+      <div class="history-content">
+        <div class="history-panel active" data-panel="temperature">
+          <div class="chart-container">
+            <canvas id="tempChart"></canvas>
+          </div>
+        </div>
+
+        <div class="history-panel" data-panel="precipitation">
+          <div class="chart-container">
+            <canvas id="precipChart"></canvas>
+          </div>
+        </div>
+
+        <div class="history-panel" data-panel="earthquakes">
+          <div class="chart-container">
+            <canvas id="quakeChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- Educational Section -->
+  <section class="education-section" id="learn">
+    <div class="section-header">
+      <h2 class="section-title">LEARN ABOUT EARTH SYSTEMS</h2>
+      <p class="section-subtitle">
+        Understand weather patterns and seismic activity
+      </p>
+    </div>
+
+    <div class="education-container">
+      <div class="education-cards">
+        <div class="edu-card">
+          <div class="edu-visual weather-animation">
+            <div class="sun"></div>
+            <div class="cloud"></div>
+            <div class="rain"></div>
+          </div>
+          <div class="edu-content">
+            <h3>How Weather Forms</h3>
+            <p>Weather is the state of the atmosphere at a particular place and time. It's driven by:</p>
+            <ul>
+              <li>Temperature differences</li>
+              <li>Atmospheric pressure</li>
+              <li>Humidity levels</li>
+              <li>Wind patterns</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="edu-card">
+          <div class="edu-visual quake-animation">
+            <div class="tectonic-plate left"></div>
+            <div class="tectonic-plate right"></div>
+            <div class="fault-line"></div>
+          </div>
+          <div class="edu-content">
+            <h3>What Causes Earthquakes</h3>
+            <p>Earthquakes occur due to sudden release of energy in the Earth's lithosphere:</p>
+            <ul>
+              <li>Tectonic plate movements</li>
+              <li>Volcanic activity</li>
+              <li>Human activities (mining, reservoirs)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- News & Updates Section -->
+  <section class="news-section">
+    <div class="section-header">
+      <h2 class="section-title">LATEST ENVIRONMENTAL NEWS</h2>
+      <p class="section-subtitle">
+        Stay informed about climate and geological developments
+      </p>
+    </div>
+
+    <div class="news-container">
+      <div class="news-card">
+        <div class="news-image"
+          style="background-image: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">
+        </div>
+        <div class="news-content">
+          <h3>New Climate Change Report Released</h3>
+          <p class="news-excerpt">Latest findings show accelerating effects of climate change on weather patterns
+            globally...</p>
+          <span class="news-date">2 hours ago</span>
+          <a href="#" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-image"
+          style="background-image: url('https://images.unsplash.com/photo-1506259091721-347e791bab0f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">
+        </div>
+        <div class="news-content">
+          <h3>Major Earthquake Strikes Pacific Region</h3>
+          <p class="news-excerpt">A 6.7 magnitude earthquake was recorded near the Tonga Trench earlier today...</p>
+          <span class="news-date">5 hours ago</span>
+          <a href="#" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="news-card">
+        <div class="news-image"
+          style="background-image: url('https://images.unsplash.com/photo-1502224562085-639556652f33?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">
+        </div>
+        <div class="news-content">
+          <h3>New Early Warning System Developed</h3>
+          <p class="news-excerpt">Scientists announce breakthrough in earthquake prediction technology...</p>
+          <span class="news-date">1 day ago</span>
+          <a href="#" class="news-link">Read More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Feedback Section -->
+  <section class="feedback-section" id="reports">
+    <div class="section-header">
+      <h2 class="section-title">REPORT YOUR OBSERVATIONS</h2>
+      <p class="section-subtitle">
+        Help improve our predictions by sharing your local conditions
+      </p>
+    </div>
+
+    <div class="feedback-container">
+      <form class="feedback-form" id="observationForm">
+        <div class="form-group">
+          <label for="observationType">Observation Type</label>
+          <select id="observationType" required>
+            <option value="">Select type</option>
+            <option value="weather">Weather condition</option>
+            <option value="earthquake">Felt earthquake</option>
+            <option value="flood">Flooding</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" placeholder="City or approximate location" required>
+        </div>
+
+        <div class="form-group">
+          <label for="details">Details</label>
+          <textarea id="details" placeholder="Describe what you observed..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="severity">Severity (if applicable)</label>
+          <select id="severity">
+            <option value="">Select severity</option>
+            <option value="mild">Mild</option>
+            <option value="moderate">Moderate</option>
+            <option value="severe">Severe</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">SUBMIT REPORT</button>
+      </form>
+
+      <div class="community-reports" id="report">
+        <h3>RECENT COMMUNITY REPORTS</h3>
+        <div class="reports-list">
+          <div class="report-item">
+            <div class="report-type weather">
+              <i class="fas fa-cloud-rain"></i>
+            </div>
+            <div class="report-content">
+              <h4>Heavy Rainfall</h4>
+              <p>Downtown area, 30 mins ago</p>
+              <span class="report-severity moderate">Moderate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-logo">
+          <div class="logo-icon">
+            <div class="sphere"></div>
+            <div class="ring"></div>
+          </div>
+          <span class="logo-text">EARTHWATCH</span>
+        </div>
+        <p class="footer-text">
+          Advanced environmental monitoring and prediction systems for a safer
+          tomorrow.
+        </p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-github"></i></a>
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>QUICK LINKS</h4>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#weather">Weather</a></li>
+          <li><a href="#earthquakes">Earthquakes</a></li>
+          <li><a href="#prediction">AI Prediction</a></li>
+          <li><a href="#reports">Reports</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>RESOURCES</h4>
+        <ul class="footer-links">
+          <li><a href="#">API Documentation</a></li>
+          <li><a href="#">Data Sources</a></li>
+          <li><a href="#">Research Papers</a></li>
+          <li><a href="#">Mobile Apps</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>CONTACT</h4>
+        <ul class="footer-links">
+          <li><a href="mailto:contact@earthwatch.com">Email Us</a></li>
+          <li><a href="#">Support Center</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press Inquiries</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="newsletter">
+        <h4>STAY UPDATED</h4>
+        <form class="newsletter-form">
+          <input type="email" placeholder="Your email address">
+          <button type="submit">SUBSCRIBE</button>
+        </form>
+      </div>
+
+      <div class="legal">
+        <div class="copyright">
+          © 2025 EARTHWATCH. ALL RIGHTS RESERVED.
+        </div>
+        <div class="legal-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Data Usage</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!--------- Bottom to top button ---------->
+  <button id="cyberScrollBtn" class="cyber-scroll-btn" aria-label="Return to orbit">
+    <div class="hologram-core"></div>
+    <div class="neon-ring"></div>
+    <div class="energy-trail"></div>
+    <svg class="arrow-icon" viewBox="0 0 24 24">
+      <path d="M12 4l-8 8h5v8h6v-8h5z" fill="none" stroke="currentColor" stroke-width="2" />
+    </svg>
+    <div class="particle-field"></div>
+  </button>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</body>
+
+</html>
